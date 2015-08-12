@@ -3,16 +3,8 @@
   vars:
     update_apt_cache: false
     server_name: admin.vagrant.local api.vagrant.local
-    web_server_name: 192.168.100.100 vagrant.local
-    cert_path: targets/vagrant/certs
-    cert_file: apns-dev-civix.pem
-    parameters_file: targets/vagrant/config/parameters.yml
-    config_js_file: targets/vagrant/config/config.js
   roles:
-    - setup
-    - configure
-    - monitoring
-    - deploy
+    - setup-vagrant
 
   pre_tasks:
       - name: update apt if needed

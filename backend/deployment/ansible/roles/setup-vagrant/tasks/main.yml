@@ -82,19 +82,24 @@
     curl -sS https://getcomposer.org/installer | php;
 
 - name: composer | path fix 
-  shell: mv composer.phar /usr/local/bin/composer;
   tags: vagrant
+  shell: mv composer.phar /usr/local/bin/composer;
 
 - name: ssh | setup known_hosts
   tags: vagrant
   copy: src=known_hosts dest=/etc/ssh/ssh_known_hosts
 
 - name: nginx | restart 
-  service: name=nginx state=restarted
   tags: vagrant
+  service: name=nginx state=restarted
+
 
 - name: symfony | copy parameters
+  tags: vagrant
   command: cp app/config/parameters.default.yml app/config/parameters.yml
   args:
     chdir: /vagrant/backend 
 
+- name: composer | install dependancies
+  tags: composer
+  composer: command=install working_dir=/vagrant/backend 
