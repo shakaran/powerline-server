@@ -16,17 +16,9 @@ By contributing to Powerline, you’re making a difference for a fun open source
 #### Build the image
 ` vagrant up `
 
-#### Run the setup script
-` ./setup-dev `
-
 #### Log in to the instance
 ` vagrant ssh`
 
-#### Copy app default parameters and install
-```
-cp app/config/parameters.default.yml app/config/parameters.yml
-composer install
-```
 ### Build Database
 ```
 php app/console doctrine:database:create
