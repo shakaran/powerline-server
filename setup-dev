@@ -1,3 +1,0 @@
-#!/bin/bash
-
-ansible-playbook -i backend/deployment/ansible/inventory/all backend/deployment/ansible/vagrant-dev.yml
