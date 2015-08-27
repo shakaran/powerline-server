@@ -25,6 +25,39 @@ php app/console doctrine:database:create
 php app/console doctrine:migration:migrate -n
 ```
 
+### Cache / Asset
+Although we are hard at work building our new Leader experience, admin.powerli.ne serves as our interim Leader portal. It is built on the symfony framework. At this point, few if any Pull Requests will be merged for symfony backed Leader work. Please see the [Powerline Web App](https://github.com/PowerlineApp/powerline-web) or contact us before moving forward.
+
+#### Cache
+```
+/vagrant/backend/app/console cache:clear -e=prod
+/vagrant/backend/app/console cache:clear -e=dev
+/vagrant/backend/app/console cache:clear -e=test_behat
+```
+
+#### Assets
+```
+/vagrant/backend/app/console assetic:dump -e=prod
+/vagrant/backend/app/console assets:install --symlink
+```
+
+### Tests
+
+#### Behat
+```
+/vagrant/backend/bin/behat -p admin
+/vagrant/backend/bin/behat -p api
+```
+
+#### Load testing
+* The config for jMeter (url should be modified according to your local (test) server: backend/src/Civix/LoadBundle/Resources/jmeter/CivixLoadTesting.jmx
+
+* Fixtures (db will be dropped!):
+```
+backend/app/console load:scenario --10000
+backend/app/console load:scenario --100000
+backend/app/console load:scenario --1000000
+```
 
 ## Contributing
 Want to help build an amazing product? Check out our [Powerline Assembly Project](https://assembly.com/powerline) for all the latest bounties and roadmap. We follow the [GitHub Flow](https://guides.github.com/introduction/flow/index.html) model so pull requests are easy! Although you don’t have to create a feature branch, it helps streamline the merge process.
