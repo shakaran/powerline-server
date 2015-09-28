@@ -15,7 +15,9 @@ class IOSEndpoint extends AbstractEndpoint
             'alert' => $message,
             'entity' => json_encode($entityData),
             'type' => $type,
-            'sound' => 'default'
+            'sound' => 'default',
+            'title' => $type,
+            'image' => 'www/images/notification_image.jpg',
         )))));
     }
 }

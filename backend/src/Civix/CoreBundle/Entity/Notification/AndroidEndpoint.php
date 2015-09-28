@@ -15,6 +15,8 @@ class AndroidEndpoint extends AbstractEndpoint
             'message' => $message,
             'type' => $type,
             'entity' => json_encode($entityData),
+            'title' => $type,
+            'image' => 'www/images/notification_image.jpg',
         )))));
     }
 }
