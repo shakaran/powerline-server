@@ -97,6 +97,8 @@
             </fileset>
         </copy>
 
+        <exec command="chmod +x ${dist}/app/console" />
+
         <mkdir dir="${dist}/log"/>
 
         <exec executable="app/console" passthru="true" checkreturn="true" dir="${dist}">
