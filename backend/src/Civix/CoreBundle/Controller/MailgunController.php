@@ -4,24 +4,23 @@ namespace Civix\CoreBundle\Controller;
 
 use Mailgun\Mailgun;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
-class AccountController extends Controller
+class MailgunController extends Controller
 {
 
     /**
-     * @Route("/test/mailgun", name="mailgun_test_log")
+     * @Route("/log" , name="mailgun_test")
      */
     public function logAction()
     {
-        $mailgun = new Mailgun('099047fdcf1cc1a813df
-602a6f72ef8b','v3',false);
 
-        $domain = "powerlinegroups.com";
+       return $this->get('civix_core.mailgun')->listremovememberAction('sofiendev','sofien1105@gmail.com');
 
-        return $mailgun->get("$domain/log", array('limit' => 25,
-            'skip'  => 0));
     }
-
 
 }
 
