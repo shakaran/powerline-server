@@ -2,6 +2,7 @@
 
 namespace Civix\CoreBundle\Controller;
 
+use Cocur\Slugify\Slugify;
 use Mailgun\Mailgun;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -17,8 +18,12 @@ class MailgunController extends Controller
      */
     public function logAction()
     {
+        $slugify = new Slugify();
 
-       return $this->get('civix_core.mailgun')->listremovememberAction('sofiendev','sofien1105@gmail.com');
+        $groupName = $slugify->slugify('We Love The Wales');
+        var_dump($groupName);die();
+
+       return $this->get('civix_core.mailgun')->listaddmemberAction('sofiendev','sofien1105@gmail.com','sofien');
 
     }
 
