@@ -21,7 +21,7 @@ class MailgunController extends Controller
         $slugify = new Slugify();
 
         $groupName = $slugify->slugify('We Love The Wales');
-        var_dump($groupName);die();
+        //var_dump($groupName);die();
 
        return $this->get('civix_core.mailgun')->listaddmemberAction('sofiendev','sofien1105@gmail.com','sofien');
 

@@ -14,9 +14,14 @@ use Mailgun\Mailgun;
 
 class MailgunApi {
 
-    static $public_key= "pubkey-13f0754196d3299f46d5bc6337cd1ac5";
-    static $private_key= "key-de1771b1c0056a4895cccd34f425ffe7";
+    static $public_key;
+    static $private_key;
 
+    function __construct($public_key,$private_key)
+    {
+        $this::$public_key = $public_key;
+        $this::$private_key = $private_key;
+    }
 
 
     public function listcreateAction($listname,$description)
