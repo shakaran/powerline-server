@@ -38,7 +38,8 @@ class MailgunApi {
         }
         $result = $mailgun->post("lists", array(
             'address'     => $listname.'@powerlinegroups.com',
-            'description' => ''.$description
+            'description' => ''.$description,
+            'access_level' => 'members'
         ));
 
         return new JsonResponse($result);
