@@ -15,7 +15,6 @@ use Civix\CoreBundle\Entity\ActivityRead;
 use Civix\CoreBundle\Entity\Micropetitions\Petition;
 use Civix\CoreBundle\Entity\Poll\Question;
 
-
 class ActivityRepository extends EntityRepository
 {
     public function findActivities(\DateTime $start, User $user, $closed = false)

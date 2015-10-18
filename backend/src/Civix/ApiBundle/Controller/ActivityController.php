@@ -42,12 +42,20 @@ class ActivityController extends BaseController
      */
     public function listAction(Request $request)
     {
+        $offset = $request->query->get('offset', 0);
+        $limit = $request->query->get('limit', 10);
+
         $start = new \DateTime;
         $start->sub(new \DateInterval('P30D'));
 
         if ($request->query->has('following')) {
+            // following var set in request
+
+            // get following users
             $following = $this->getDoctrine()->getRepository(User::class)
                 ->find($request->get('following'));
+
+            // get user follow status
             $userFollow = $this->getDoctrine()
                 ->getRepository('CivixCoreBundle:UserFollow')->findOneBy([
                     'user' => $following,
@@ -58,11 +66,12 @@ class ActivityController extends BaseController
                 $activities = [];
             } else {
                 $activities = $this->getDoctrine()->getRepository('CivixCoreBundle:Activity')
-                    ->findActivitiesByFollowing($following);
+                    ->findActivitiesByFollowing($following, (int) $offset, (int) $limit);
             }
         } else {
+            // get activities by user with offset + limit
             $activities = $this->getDoctrine()->getRepository('CivixCoreBundle:Activity')
-                ->findActivitiesByUser($this->getUser(), $start);
+                ->findActivitiesByUser($this->getUser(), $start, (int) $offset, (int) $limit);
         }
 
         $response = $this->createJSONResponse($this->jmsSerialization($activities, ['api-activities']));
