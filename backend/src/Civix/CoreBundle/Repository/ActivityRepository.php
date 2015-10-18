@@ -15,6 +15,7 @@ use Civix\CoreBundle\Entity\ActivityRead;
 use Civix\CoreBundle\Entity\Micropetitions\Petition;
 use Civix\CoreBundle\Entity\Poll\Question;
 
+
 class ActivityRepository extends EntityRepository
 {
     public function findActivities(\DateTime $start, User $user, $closed = false)
@@ -61,7 +62,16 @@ class ActivityRepository extends EntityRepository
             ->getQuery()->getResult();
     }
 
-    public function findActivitiesByUser(User $user, \DateTime $start)
+    /**
+     * Find activities by user
+     *
+     * @param User $user
+     * @param \DateTime $start
+     * @param $offset
+     * @param $limit
+     * @return array
+     */
+    public function findActivitiesByUser(User $user, \DateTime $start, $offset, $limit)
     {
         /** @var $em EntityManager */
         $em = $this->getEntityManager();
@@ -72,7 +82,8 @@ class ActivityRepository extends EntityRepository
 
         $districtsIds = $user->getDistrictsIds();
         $sectionsIds = $user->getGroupSectionsIds();
-        $activeGroups = $this->getEntityManager()->getRepository('CivixCoreBundle:UserGroup')->getActiveGroupIds($user);
+        $activeGroups = $this->getEntityManager()->getRepository('CivixCoreBundle:UserGroup')
+            ->getActiveGroupIds($user);
 
         $userFollowingIds = $user->getFollowingIds();
 
@@ -97,12 +108,12 @@ class ActivityRepository extends EntityRepository
             ->setParameter('user', $user)
             ->setParameter('start', $start->format('Y-m-d H:i:s'))
             ->orderBy('act.sentAt', 'DESC')
-            ->setMaxResults(500)
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery()->getResult();
 
+        // $this->getReadItems($user, $start, $activities);
         $readItems = $this->getEntityManager()->getRepository(ActivityRead::class)->findLastIdsByUser($user, $start);
-
-        /* @var $activity Activity */
         foreach ($activities as $activity) {
             if (in_array($activity->getId(), $readItems)) {
                 $activity->setRead(true);
@@ -112,14 +123,91 @@ class ActivityRepository extends EntityRepository
         return $activities;
     }
 
-    public function findActivitiesByFollowing(User $following)
+    /**
+     * Return the count of activities by user
+     *
+     * Not Implemented Yet
+     *
+     * @param User $user
+     * @param \DateTime $start
+     * @return array
+     */
+    public function findActivitiesByUserCount(User $user, \DateTime $start)
+    {
+        /** @var $em EntityManager */
+        $em = $this->getEntityManager();
+
+        /** @var $qb QueryBuilder */
+        $qb = $em->createQueryBuilder();
+        $expr = $qb->expr();
+
+        $districtsIds = $user->getDistrictsIds();
+        $sectionsIds = $user->getGroupSectionsIds();
+        $activeGroups = $this->getEntityManager()->getRepository('CivixCoreBundle:UserGroup')
+            ->getActiveGroupIds($user);
+
+        $userFollowingIds = $user->getFollowingIds();
+
+        return $qb->select('COUNT(act.id)')
+            ->from('CivixCoreBundle:Activity', 'act')
+            ->leftJoin('act.activityConditions', 'act_c')
+            ->where($expr->gt('act.sentAt', ':start'))
+            ->andWhere(
+                $expr->orX(
+                    $expr->in('act_c.districtId', ':userDistrictsIds'),
+                    'act_c.isSuperuser = 1',
+                    $expr->in('act_c.groupId', ':userGroupsIds'),
+                    $expr->in('act_c.userId', ':userFollowingIds'),
+                    $expr->in('act_c.groupSectionId', ':userGroupSectionIds'),
+                    ':user MEMBER OF act_c.users'
+                )
+            )
+            ->setParameter('userDistrictsIds', empty($districtsIds)?false:$districtsIds)
+            ->setParameter('userGroupsIds', empty($activeGroups)?false:$activeGroups)
+            ->setParameter('userFollowingIds', empty($userFollowingIds)?false:$userFollowingIds)
+            ->setParameter('userGroupSectionIds', empty($sectionsIds)?false:$sectionsIds)
+            ->setParameter('user', $user)
+            ->setParameter('start', $start->format('Y-m-d H:i:s'))
+            ->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * return an array of activities that are read
+     *
+     * @param User $user
+     * @param \Datetime $start
+     * @param array $activites
+     * @return mixed
+     */
+    public function getReadItems(User $user, \Datetime $start, array $activites)
+    {
+        $readItems = $this->getEntityManager()->getRepository(ActivityRead::class)
+            ->findLastIdsByUser($user, $start);
+        foreach ($activities as $activity) {
+            if (in_array($activity->getId(), $readItems)) {
+                $activity->setRead(true);
+            }
+        }
+        return $activities;
+    }
+
+    /**
+     * Find activities by Following the user
+     *
+     * @param User $following
+     * @param $offset
+     * @param $limit
+     * @return array
+     */
+    public function findActivitiesByFollowing(User $following, $offset, $limit)
     {
         return $this->createQueryBuilder('act')
             ->leftJoin('act.activityConditions', 'act_c')
             ->where('act_c.userId = :following')
             ->setParameter('following', $following->getId())
             ->orderBy('act.sentAt', 'DESC')
-            ->setMaxResults(100)
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery()->getResult()
         ;
     }
