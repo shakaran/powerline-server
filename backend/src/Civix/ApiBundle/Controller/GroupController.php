@@ -72,7 +72,7 @@ class GroupController extends BaseController
 
         $slugify = new Slugify();
 
-        $groupName = $slugify->slugify($group->getOfficialName());
+        $groupName = $slugify->slugify($group->getOfficialName(),'');
 
         $mailgun = $this->get('civix_core.mailgun')->listcreateAction($groupName,$group->getOfficialDescription());
 
@@ -238,12 +238,12 @@ class GroupController extends BaseController
             }
             
             $entityManager->persist($changedUser);
-            $entityManager->flush();
+
         }
 
         $slugify = new Slugify();
 
-        $groupName = $slugify->slugify($group->getOfficialName());
+        $groupName = $slugify->slugify($group->getOfficialName(),'');
 
         $mailgun = $this->get('civix_core.mailgun')->listaddmemberAction($groupName,$this->getUser()->getEmail(),$this->getUser()->getFirstName().' '.$this->getUser()->getLastName());
 
@@ -253,6 +253,7 @@ class GroupController extends BaseController
             );
         }else{
 
+        $entityManager->flush(); // No persist until the user is added to Mailgun List
 
         //check status of join
         $userGroup = $entityManager
@@ -284,7 +285,7 @@ class GroupController extends BaseController
 
         $slugify = new Slugify();
 
-        $groupName = $slugify->slugify($group->getOfficialName());
+        $groupName = $slugify->slugify($group->getOfficialName(),'');
 
         $mailgun = $this->get('civix_core.mailgun')->listremovememberAction($groupName,$this->getUser()->getEmail());
 
