@@ -53,3 +53,6 @@ parameters:
 
     rabbitmq_connections:
         default: { host: 'localhost', port: 5672, user: 'guest', password: 'guest', vhost: '/' }
+
+    mailgun_public: pubkey-
+    mailgun_private: key-
