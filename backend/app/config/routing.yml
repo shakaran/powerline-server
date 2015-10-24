@@ -75,9 +75,4 @@ civix_superuser:
 civix_account:
     resource: "@CivixFrontBundle/Controller/AccountController.php"
     prefix:   /account
-    type: annotation
-
-mailgun_test:
-    resource: "@CivixCoreBundle/Controller/MailgunController.php"
-    prefix:   /mailgun/test
-    type: annotation
+    type: annotation 
