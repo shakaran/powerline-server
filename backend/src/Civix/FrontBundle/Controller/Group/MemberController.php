@@ -2,6 +2,7 @@
 
 namespace Civix\FrontBundle\Controller\Group;
 
+use Cocur\Slugify\Slugify;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -10,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Civix\CoreBundle\Entity\User;
 use Civix\CoreBundle\Entity\Group;
 use Civix\CoreBundle\Entity\UserGroup;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/members")
@@ -66,6 +68,16 @@ class MemberController extends Controller
             'remove_members_' . $user->getId(), $this->getRequest()->get('_token')
         )) {
 
+            $slugify = new Slugify();
+
+            $groupName = $slugify->slugify($this->getUser()->getOfficialName(),'');
+
+            $mailgun = $this->get('civix_core.mailgun')->listremovememberAction($groupName,$this->getUser()->getEmail());
+
+            if($mailgun['http_response_code'] != 200) {
+                $this->get('session')->getFlashBag()->add('error' , 'cannot remove this user from mailgun list');
+                return $this->redirect($this->generateUrl('civix_front_group_members'));
+            }
             $this->get('civix_core.group_manager')
                 ->unjoinGroup($user, $this->getUser());
 
@@ -123,6 +135,19 @@ class MemberController extends Controller
                 ->isJoinedUser($this->getUser(), $user);
 
             if ($userGroup) {
+
+                $slugify = new Slugify();
+                $groupName = $slugify->slugify($userGroup->getGroup()->getOfficialName(),'');
+
+                $mailgun = $this->get('civix_core.mailgun')->listaddmemberAction($groupName,$userGroup->getUser()->getEmail(),$userGroup->getUser()->getFirstName().' '.$userGroup->getUser()->getLastName());
+
+
+                if($mailgun['http_response_code'] != 200){
+
+                    $this->get('session')->getFlashBag()->add('error' , 'cannot add user to mailgun list');
+                    return $this->redirect($this->generateUrl('civix_front_group_manage_approvals'));
+
+                }
                 $userGroup->setStatus(UserGroup::STATUS_ACTIVE);
                 $entityManager->persist($userGroup);
                 $entityManager->flush();
@@ -152,5 +177,13 @@ class MemberController extends Controller
             'user' => $user,
             'package' => $this->get('civix_core.subscription_manager')->getPackage($this->getUser()),
         );
+    }
+
+    protected function createJSONResponse($content = '', $status = 200)
+    {
+        $response = new Response($content, $status);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 }
