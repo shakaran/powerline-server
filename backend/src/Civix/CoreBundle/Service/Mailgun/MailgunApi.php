@@ -53,13 +53,27 @@ class MailgunApi {
 
         $listAddress = $listname.'@powerlinegroups.com';
 
-        $result = $mailgun->post("lists/$listAddress/members", array(
-            'address'     => ''.$address,
-            'name'        => ''.$name,
-            'subscribed'  => true,
-            'upsert'      => true
+        $checkresult = $mailgun->get("lists", array(
+            'address'     => ''.$listAddress,
         ));
+        $decodedresult = json_decode(json_encode($checkresult),true);
+        $count = $decodedresult['http_response_body']['total_count'];
 
+        if($count == 0){
+            $result = $this->listcreateAction($listname,' the list '.$listname);
+
+            if($result['http_response_code'] != 200){
+
+                return $result;
+
+            }
+        }
+            $result = $mailgun->post("lists/$listAddress/members", array(
+                'address'     => ''.$address,
+                'name'        => ''.$name,
+                'subscribed'  => true,
+                'upsert'      => true
+            ));
 
         return new JsonResponse($result);
 
