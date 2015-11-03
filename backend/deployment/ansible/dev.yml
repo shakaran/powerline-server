@@ -2,8 +2,8 @@
 - hosts: dev
   vars:
     update_apt_cache: false
-    server_name: "admin.civix-dev.intellectsoft.org api.civix-dev.intellectsoft.org"
-    web_server_name: "54.194.67.27 civix-dev.intellectsoft.org"
+    server_name: "admin.52.91.99.244 api.52.91.99.244"
+    web_server_name: "dev.powerli.ne 52.91.99.244"
     cert_path: targets/dev/certs
     cert_file: apns-dev-civix.pem
     parameters_file: targets/dev/config/parameters.yml
