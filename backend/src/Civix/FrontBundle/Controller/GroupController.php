@@ -46,7 +46,6 @@ class GroupController extends Controller
     {
         $form = $this->createForm(new Registration(), new Group());
 
-        $this->get('civix_core.mailgun')->listremovememberAction('sofiendev','sofien54@gmail.com');
         $request = $this->getRequest();
 
         if ($request->getMethod() == 'POST') {
