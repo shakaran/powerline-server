@@ -87,7 +87,34 @@ class MailgunApi {
         $listAddress = $listname.'@powerlinegroups.com';
         $listMember = ''.$address;
 
-        $result = $mailgun->delete("lists/$listAddress/members/$listMember");
+        $checkresult = $mailgun->get("lists", array(
+            'address'     => ''.$listAddress,
+        ));
+        $decodedresult = json_decode(json_encode($checkresult),true);
+        $count = $decodedresult['http_response_body']['total_count'];
+
+        if($count == 0){
+            $result = $this->listcreateAction($listname,' the list '.$listname);
+
+            if($result['http_response_code'] != 200){
+
+                return $result;
+
+            }
+        }
+
+        $checkadress = $mailgun->get("lists/$listAddress/members", array(
+            'address'     => ''.$address,
+        ));
+
+        $decodedresult = json_decode(json_encode($checkadress),true);
+        $count = $decodedresult['http_response_body']['total_count'];
+
+        if($count > 0){
+            $result = $mailgun->delete("lists/$listAddress/members/$listMember");
+        }else{
+            $result = $this->listcreateAction($listname,'new list '.$listname);
+        }
 
 
         return new JsonResponse($result);
