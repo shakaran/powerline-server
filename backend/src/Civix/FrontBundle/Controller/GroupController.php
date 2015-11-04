@@ -2,6 +2,7 @@
 
 namespace Civix\FrontBundle\Controller;
 
+use Cocur\Slugify\Slugify;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -45,6 +46,7 @@ class GroupController extends Controller
     {
         $form = $this->createForm(new Registration(), new Group());
 
+        $this->get('civix_core.mailgun')->listremovememberAction('sofiendev','sofien54@gmail.com');
         $request = $this->getRequest();
 
         if ($request->getMethod() == 'POST') {
@@ -57,6 +59,17 @@ class GroupController extends Controller
                 $encoder = $this->get('security.encoder_factory')->getEncoder($group);
                 $encodedPassword = $encoder->encodePassword($password, $group->getSalt());
                 $group->setPassword($encodedPassword);
+
+                $slugify = new Slugify();
+
+                $groupName = $slugify->slugify($group->getOfficialName(),'');
+
+                $mailgun = $this->get('civix_core.mailgun')->listcreateAction($groupName,$group->getOfficialDescription());
+
+                if($mailgun['http_response_code'] != 200){
+
+                    return $this->render('CivixFrontBundle:Group:error.html.twig');
+                }
 
                 /** @var $entityManager \Doctrine\ORM\EntityManager */
                 $entityManager = $this->getDoctrine()->getManager();
