@@ -1,5 +1,6 @@
 ---
 - hosts: dev
+  sudo: True
   vars:
     update_apt_cache: false
     server_name: "admin.52.91.99.244 api.52.91.99.244"
