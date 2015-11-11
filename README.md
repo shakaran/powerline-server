@@ -20,9 +20,13 @@ By contributing to Powerline, you’re making a difference for a fun open source
 ` vagrant ssh`
 
 ### Build Database
+
+Run next commands to setup dev environment fixtures: 
+
 ```
 php app/console doctrine:database:create
-php app/console doctrine:migration:migrate -n
+php app/console doctrine:schema:create
+php app/console doctrine:fixtures:load
 ```
 
 ### Cache / Asset
