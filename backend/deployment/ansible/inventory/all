@@ -1,7 +1,7 @@
 [vagrant]
 vagrant ansible_connection=ssh ansible_ssh_host=192.168.10.100 ansible_ssh_user=vagrant host_key_checking=False
 [dev]
-dev ansible_connection=ssh ansible_ssh_host=52.91.99.244 ansible_ssh_user=ubuntu ansible_ssh_private_key_file=targets/dev/ssh/id_rsa host_key_checking=False
+dev ansible_connection=ssh ansible_ssh_host=52.5.45.80 ansible_ssh_user=ubuntu ansible_ssh_private_key_file=targets/dev/ssh/id_rsa host_key_checking=False
 [prod]
 prod ansible_connection=ssh ansible_ssh_host=54.83.1.249 ansible_ssh_user=root ansible_ssh_private_key_file=targets/prod/ssh/id_rsa host_key_checking=False
 [staging]
