@@ -3,8 +3,8 @@
   sudo: True
   vars:
     update_apt_cache: false
-    server_name: "52.5.45.80"
-    web_server_name: "dev.powerli.ne 52.5.45.80/web"
+    server_name: "admin-dev.powerli.ne api-dev.powerli.ne"
+    web_server_name: "dev.powerli.ne"
     cert_path: targets/dev/certs
     cert_file: apns-dev-civix.pem
     parameters_file: targets/dev/config/parameters.yml
