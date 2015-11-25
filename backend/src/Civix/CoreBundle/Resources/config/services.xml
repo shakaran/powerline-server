@@ -26,8 +26,11 @@
 
     <services>
         <service id="civix_core.crop_image" class="Civix\CoreBundle\Service\CropImage">
-            
         </service>
+        <service id="civix_core.mailgun" class="Civix\CoreBundle\Service\Mailgun\MailgunApi">
+            <argument>%mailgun_public%%</argument>
+            <argument>%mailgun_private%</argument>
+        </service> 
         <service id="civix_core.crop_avatar" class="Civix\CoreBundle\Service\CropAvatar">
             <argument type="service" id="civix_core.crop_image" />
             <argument type="service" id="logger" />
