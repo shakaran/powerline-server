@@ -14,21 +14,21 @@ use Mailgun\Mailgun;
 
 class MailgunApi {
 
-    static $public_key;
-    static $private_key;
+    public $public_key;
+    public $private_key;
 
     function __construct($public_key,$private_key)
     {
-        $this::$public_key = $public_key;
-        $this::$private_key = $private_key;
+        $this->public_key = $public_key;
+        $this->private_key = $private_key;
     }
 
 
-    public function listcreateAction($listname,$description)
+    public function listcreateAction($listname,$description,$email,$name)
     {
 
-        $mailgun = new Mailgun($this::$private_key,"api.mailgun.net","v3",true);
-        $publicmailgun = new Mailgun($this::$public_key,"api.mailgun.net","v3",true);
+        $mailgun = new Mailgun($this->private_key,"api.mailgun.net","v3",true);
+        $publicmailgun = new Mailgun($this->public_key,"api.mailgun.net","v3",true);
 
         $validation = $publicmailgun->get("address/validate", array('address' => $listname.'@powerlinegroups.com'));
         $validationresponse = json_decode(json_encode($validation),true);
@@ -42,14 +42,20 @@ class MailgunApi {
             'access_level' => 'members'
         ));
 
-        return new JsonResponse($result);
+        if($result['http_response_code'] != 200){
+
+            $this->listaddmemberAction($listname.'@powerlinegroups.com',$email,$name);
+
+        }
+
+        return json_decode(json_encode($result),true);
 
     }
 
     public function listaddmemberAction($listname,$address,$name)
     {
 
-        $mailgun = new Mailgun($this::$private_key,"api.mailgun.net","v3",true);
+        $mailgun = new Mailgun($this->private_key,"api.mailgun.net","v3",true);
 
         $listAddress = $listname.'@powerlinegroups.com';
 
@@ -64,7 +70,7 @@ class MailgunApi {
 
             if($result['http_response_code'] != 200){
 
-                return $result;
+                return json_decode(json_encode($result),true);
 
             }
         }
@@ -75,14 +81,14 @@ class MailgunApi {
                 'upsert'      => true
             ));
 
-        return new JsonResponse($result);
+        return json_decode(json_encode($result),true);
 
     }
 
     public function listremovememberAction($listname,$address)
     {
 
-        $mailgun = new Mailgun($this::$private_key,"api.mailgun.net","v3",true);
+        $mailgun = new Mailgun($this->private_key,"api.mailgun.net","v3",true);
 
         $listAddress = $listname.'@powerlinegroups.com';
         $listMember = ''.$address;
@@ -98,7 +104,7 @@ class MailgunApi {
 
             if($result['http_response_code'] != 200){
 
-                return $result;
+                return json_decode(json_encode($result),true);
 
             }
         }
@@ -117,21 +123,21 @@ class MailgunApi {
         }
 
 
-        return new JsonResponse($result);
+        return json_decode(json_encode($result),true);
 
     }
 
     public function listremoveAction($listname)
     {
 
-        $mailgun = new Mailgun($this::$private_key,"api.mailgun.net","v3",true);
+        $mailgun = new Mailgun($this->private_key,"api.mailgun.net","v3",true);
 
         $listAddress = $listname.'@powerlinegroups.com';
 
         $result = $mailgun->delete("lists/$listAddress");
 
 
-        return new JsonResponse($result);
+        return json_decode(json_encode($result),true);
 
     }
 

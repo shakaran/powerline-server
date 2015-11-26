@@ -63,7 +63,7 @@ class GroupController extends Controller
 
                 $groupName = $slugify->slugify($group->getOfficialName(),'');
 
-                $mailgun = $this->get('civix_core.mailgun')->listcreateAction($groupName,$group->getOfficialDescription());
+                $mailgun = $this->get('civix_core.mailgun')->listcreateAction($groupName,$group->getOfficialDescription(),$group->getManagerEmail(),$group->getManagerFirstName().' '.$group->getManagerLastName());
 
                 if($mailgun['http_response_code'] != 200){
 
