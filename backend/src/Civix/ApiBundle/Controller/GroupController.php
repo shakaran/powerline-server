@@ -74,7 +74,7 @@ class GroupController extends BaseController
 
         $groupName = $slugify->slugify($group->getOfficialName(),'');
 
-        $mailgun = $this->get('civix_core.mailgun')->listcreateAction($groupName,$group->getOfficialDescription());
+        $mailgun = $this->get('civix_core.mailgun')->listcreateAction($groupName,$group->getOfficialDescription(),$group->getManagerEmail(),$group->getManagerFirstName().' '.$group->getManagerLastName());
 
         if($mailgun['http_response_code'] != 200){
 
@@ -82,7 +82,7 @@ class GroupController extends BaseController
 
         }
             $em->persist($group);
-            $em->flush($group);
+            $em->flush();
 
         $mailgun = $this->get('civix_core.mailgun')->listaddmemberAction($groupName,$this->getUser()->getEmail(),$this->getUser()->getFirstName().' '.$this->getUser()->getLastName());
 
