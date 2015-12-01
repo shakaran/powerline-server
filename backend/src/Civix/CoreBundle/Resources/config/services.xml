@@ -128,6 +128,7 @@
             <argument type="service" id="civix_core.email_sender"/>
             <argument type="service" id="civix_core.push_task"/>
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="civix_core.mailgun"/>
         </service>
 
         <service id="civix_core.poll.comment_manager" class="Civix\CoreBundle\Service\Poll\CommentManager">

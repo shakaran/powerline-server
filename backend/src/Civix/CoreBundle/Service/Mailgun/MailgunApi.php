@@ -34,7 +34,7 @@ class MailgunApi {
         $validationresponse = json_decode(json_encode($validation),true);
 
         if($validationresponse['http_response_code'] == 200 AND $validationresponse['http_response_body']['is_valid'] === false){
-            return new JsonResponse('Listname invalid or already exist',200);
+            return $validationresponse;
         }
         $result = $mailgun->post("lists", array(
             'address'     => $listname.'@powerlinegroups.com',
@@ -42,13 +42,15 @@ class MailgunApi {
             'access_level' => 'members'
         ));
 
+        $result = json_decode(json_encode($result),true);
+
         if($result['http_response_code'] != 200){
 
             $this->listaddmemberAction($listname.'@powerlinegroups.com',$email,$name);
 
         }
 
-        return json_decode(json_encode($result),true);
+        return $result;
 
     }
 
@@ -66,7 +68,7 @@ class MailgunApi {
         $count = $decodedresult['http_response_body']['total_count'];
 
         if($count == 0){
-            $result = $this->listcreateAction($listname,' the list '.$listname);
+            $result = $this->listcreateAction($listname,' the list '.$listname,$address,$name);
 
             if($result['http_response_code'] != 200){
 
@@ -100,7 +102,7 @@ class MailgunApi {
         $count = $decodedresult['http_response_body']['total_count'];
 
         if($count == 0){
-            $result = $this->listcreateAction($listname,' the list '.$listname);
+            $result = $this->listcreateAction($listname,' the list '.$listname,$address,' ');
 
             if($result['http_response_code'] != 200){
 
@@ -119,7 +121,7 @@ class MailgunApi {
         if($count > 0){
             $result = $mailgun->delete("lists/$listAddress/members/$listMember");
         }else{
-            $result = $this->listcreateAction($listname,'new list '.$listname);
+            $result = $this->listcreateAction($listname,'new list '.$listname,$address,' ');
         }
 
 
