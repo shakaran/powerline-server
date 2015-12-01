@@ -42,7 +42,7 @@ class MailgunApi {
             'access_level' => 'members'
         ));
 
-        $result = json_decode(json_encode($result),true);
+        $result = $this->JsonResponse($result);
 
         if($result['http_response_code'] != 200){
 
@@ -72,7 +72,7 @@ class MailgunApi {
 
             if($result['http_response_code'] != 200){
 
-                return json_decode(json_encode($result),true);
+                return $this->JsonResponse($result);
 
             }
         }
@@ -83,7 +83,7 @@ class MailgunApi {
                 'upsert'      => true
             ));
 
-        return json_decode(json_encode($result),true);
+        return $this->JsonResponse($result);
 
     }
 
@@ -106,7 +106,7 @@ class MailgunApi {
 
             if($result['http_response_code'] != 200){
 
-                return json_decode(json_encode($result),true);
+                return $this->JsonResponse($result);
 
             }
         }
@@ -125,7 +125,7 @@ class MailgunApi {
         }
 
 
-        return json_decode(json_encode($result),true);
+        return $this->JsonResponse($result);
 
     }
 
@@ -139,8 +139,13 @@ class MailgunApi {
         $result = $mailgun->delete("lists/$listAddress");
 
 
-        return json_decode(json_encode($result),true);
+        return $this->JsonResponse($result);
 
+    }
+
+    public function JsonResponse($result){
+
+        return json_decode(json_encode($result),true);
     }
 
 }
