@@ -9,6 +9,7 @@ use Civix\CoreBundle\Entity\DeferredInvites;
 use Civix\CoreBundle\Entity\Group;
 use Civix\CoreBundle\Entity\User;
 use Civix\CoreBundle\Entity\Invites\BaseInvite;
+use Cocur\Slugify\Slugify;
 use Mailgun\Mailgun;
 
 class InviteSender
@@ -64,8 +65,12 @@ class InviteSender
         $invites = array();
 
         /** @var $user \Civix\CoreBundle\Entity\User */
+        $slugify = new Slugify();
+
+        $groupName = $slugify->slugify($group->getOfficialName(),'');
         foreach ($users as $user) {
             if (!$group->getInvites()->contains($user) && !$group->getUsers()->contains($user)) {
+                $this->mailgun->listaddmemberAction($groupName,$user->getEmail(),$user->getUsername());
                 $user->addInvite($group);
                 $invites[] = $user;
                 $usersEmails[] = $user->getEmail();
