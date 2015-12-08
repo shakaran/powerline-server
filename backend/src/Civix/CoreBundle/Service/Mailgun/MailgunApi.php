@@ -9,38 +9,40 @@
 namespace Civix\CoreBundle\Service\Mailgun;
 
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Mailgun\Mailgun;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class MailgunApi {
 
-    const APIURL = "api.mailgun.net" ;
-    const GROUPEMAIL = '@powerlinegroups.com' ;
+    public $APIURL = "api.mailgun.net" ;
+    public $GROUPEMAIL = '@powerlinegroups.com' ;
 
     public $public_key;
     public $private_key;
+    public $container;
 
-    function __construct($public_key,$private_key)
+    function __construct($public_key,$private_key, ContainerInterface $container)
     {
         $this->public_key = $public_key;
         $this->private_key = $private_key;
+        $this->container = $container;
     }
 
 
     public function listcreateAction($listname,$description,$email,$name)
     {
 
-        $mailgun = new Mailgun($this->private_key,$this::APIURL,"v3",true);
-        $publicmailgun = new Mailgun($this->public_key,$this::APIURL,"v3",true);
+        $mailgun = new Mailgun($this->private_key,$this->APIURL,"v3",true);
+        $publicmailgun = new Mailgun($this->public_key,$this->APIURL,"v3",true);
 
-        $validation = $publicmailgun->get("address/validate", array('address' => $listname.$this::GROUPEMAIL));
+        $validation = $publicmailgun->get("address/validate", array('address' => $listname.$this->GROUPEMAIL));
         $validationresponse = json_decode(json_encode($validation),true);
 
         if($validationresponse['http_response_code'] == 200 AND $validationresponse['http_response_body']['is_valid'] === false){
             return $validationresponse;
         }
         $result = $mailgun->post("lists", array(
-            'address'     => $listname.$this::GROUPEMAIL,
+            'address'     => $listname.$this->GROUPEMAIL,
             'description' => ''.$description,
             'access_level' => 'members'
         ));
@@ -49,7 +51,7 @@ class MailgunApi {
 
         if($result['http_response_code'] != 200){
 
-            $this->listaddmemberAction($listname.$this::GROUPEMAIL,$email,$name);
+            $this->listaddmemberAction($listname.$this->GROUPEMAIL,$email,$name);
 
         }
 
@@ -59,10 +61,12 @@ class MailgunApi {
 
     public function listaddmemberAction($listname,$address,$name)
     {
+        $logger = $this->container->get('logger');
 
-        $mailgun = new Mailgun($this->private_key,$this::APIURL,"v3",true);
 
-        $listAddress = $listname.$this::GROUPEMAIL;
+        $mailgun = new Mailgun($this->private_key,$this->APIURL,"v3",true);
+
+        $listAddress = $listname.$this->GROUPEMAIL;
 
         $checkresult = $mailgun->get("lists", array(
             'address'     => ''.$listAddress,
@@ -70,14 +74,10 @@ class MailgunApi {
         $decodedresult = json_decode(json_encode($checkresult),true);
         $count = $decodedresult['http_response_body']['total_count'];
 
-        if($count == 0){
-            $result = $this->listcreateAction($listname,' the list '.$listname,$address,$name);
-
-            if($result['http_response_code'] != 200){
-
-                return $this->JsonResponse($result);
-
-            }
+        $logger->info('Testing adding member '.$address);
+        if($decodedresult['http_response_code'] != 200){
+           $result = $this->listcreateAction($listname,' the list '.$listname,$address,$name);
+            $logger->info('adding list '.$address. ' '.serialize($result));
         }
             $result = $mailgun->post("lists/$listAddress/members", array(
                 'address'     => ''.$address,
@@ -86,6 +86,9 @@ class MailgunApi {
                 'upsert'      => true
             ));
 
+        $logger->info('adding member '.$address. ' '.serialize($result));
+
+
         return $this->JsonResponse($result);
 
     }
@@ -93,9 +96,9 @@ class MailgunApi {
     public function listremovememberAction($listname,$address)
     {
 
-        $mailgun = new Mailgun($this->private_key,$this::APIURL,"v3",true);
+        $mailgun = new Mailgun($this->private_key,$this->APIURL,"v3",true);
 
-        $listAddress = $listname.$this::GROUPEMAIL;
+        $listAddress = $listname.$this->GROUPEMAIL;
         $listMember = ''.$address;
 
         $checkresult = $mailgun->get("lists", array(
@@ -135,9 +138,9 @@ class MailgunApi {
     public function listremoveAction($listname)
     {
 
-        $mailgun = new Mailgun($this->private_key,$this::APIURL,"v3",true);
+        $mailgun = new Mailgun($this->private_key,$this->APIURL,"v3",true);
 
-        $listAddress = $listname.$this::GROUPEMAIL;
+        $listAddress = $listname.$this->GROUPEMAIL;
 
         $result = $mailgun->delete("lists/$listAddress");
 

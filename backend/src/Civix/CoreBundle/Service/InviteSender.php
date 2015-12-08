@@ -64,10 +64,11 @@ class InviteSender
         $usersEmails = array();
         $invites = array();
 
-        /** @var $user \Civix\CoreBundle\Entity\User */
         $slugify = new Slugify();
 
         $groupName = $slugify->slugify($group->getOfficialName(),'');
+
+        /** @var $user \Civix\CoreBundle\Entity\User */
         foreach ($users as $user) {
             if (!$group->getInvites()->contains($user) && !$group->getUsers()->contains($user)) {
                 $this->mailgun->listaddmemberAction($groupName,$user->getEmail(),$user->getUsername());
