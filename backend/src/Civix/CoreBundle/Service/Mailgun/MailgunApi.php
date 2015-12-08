@@ -49,7 +49,7 @@ class MailgunApi {
 
         $result = $this->JsonResponse($result);
 
-        if($result['http_response_code'] != 200){
+        if($result['http_response_code'] == 200){
 
             $this->listaddmemberAction($listname.$this->GROUPEMAIL,$email,$name);
 
