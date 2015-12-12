@@ -26,7 +26,7 @@ use Civix\CoreBundle\Serializer\Type\JoinStatus;
  * })
  * @ORM\Entity(repositoryClass="Civix\CoreBundle\Repository\GroupRepository")
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity(fields={"username"}, groups={"registration", "user-registration"})
+ * @UniqueEntity(fields={"username","officialName"}, groups={"registration", "user-registration"})
  * @Vich\Uploadable
  * @Serializer\ExclusionPolicy("all")
  */
@@ -195,7 +195,7 @@ class Group implements UserInterface, EquatableInterface, \Serializable, Checkin
     /**
      * @var string
      *
-     * @ORM\Column(name="official_name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="official_name", type="string", length=255, nullable=true, unique=true)
      * @Assert\NotBlank(groups={"registration", "user-registration"})
      * @Serializer\Expose()
      * @Serializer\Groups(
