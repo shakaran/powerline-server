@@ -16,6 +16,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class AnnouncementRepository extends EntityRepository
 {
+    /**
+     * @param  UserInterface $owner 
+     * @return Doctrine\ORM\Query
+     */
     public function getNewQuery(UserInterface $owner)
     {
         return $this->getEntityManager()
@@ -30,6 +34,10 @@ class AnnouncementRepository extends EntityRepository
         ;
     }
 
+    /**
+     * @param  UserInterface $owner 
+     * @return Doctrine\ORM\Query
+     */
     public function getPublishedQuery(UserInterface $owner)
     {
         return $this->getEntityManager()
@@ -44,7 +52,28 @@ class AnnouncementRepository extends EntityRepository
         ;
     }
 
+    /**
+     * @param  UserInterface $owner 
+     * @return Doctrine\ORM\Query
+     */
+    public function getAllQuery(UserInterface $owner)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('a')
+            ->from($this->getAnnouncementRepositoryName($owner), 'a')
+            ->andWhere("a.{$owner->getType()} = :owner")
+            ->setParameter('owner', $owner)
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+        ;
+    }
 
+    /**
+     * @param  User      $user
+     * @param  \DateTime $start
+     * @return Announcement[]
+     */
     public function findByUser(User $user, \DateTime $start)
     {
         $districtsIds = $user->getDistrictsIds();
@@ -91,6 +120,10 @@ class AnnouncementRepository extends EntityRepository
         ;
     }
 
+    /**
+     * @param  UserInterface $owner
+     * @return integer
+     */
     public function getAnnouncementCountPerMonth(UserInterface $owner)
     {
         $startDate = new \DateTime();

@@ -7,10 +7,48 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\DeserializationContext;
+use Doctrine\ORM\Query;
 
 class BaseController extends Controller
 {
+    /**
+     * @param  Query   $query  Query to get paginated result from
+     * @param  array   $groups Serialization groups
+     * @param  integer $status HTTP status
+     * @param  integer $page   Page
+     * @param  integer $limit  How much records per page
+     * @return Response
+     */
+    protected function createPaginatedJSONResponseFromQuery(Query $query, $groups, $status = 200, $page = 1, $limit = 20)
+    {
+        $paginator = $this->get('knp_paginator');
+        $paginatedData = $paginator->paginate($query, $page, $limit);
+        return $this->createJSONResponse(
+            $this->jmsSerialization($paginatedData, $groups),
+            $status
+        );
+    }
 
+    /**
+     * @param  Query   $query  Query to get paginated result from
+     * @param  array   $groups Serialization groups
+     * @param  integer $status HTTP status
+     * @return Response
+     */
+    protected function createJSONResponseFromQuery(Query $query, $groups, $status = 200)
+    {
+        $data = $query->getResult();
+        return $this->createJSONResponse(
+            $this->jmsSerialization($data, $groups),
+            $status
+        );
+    }
+
+    /**
+     * @param string  $content JSON string (serialized by JMSSerializer)
+     * @param integer $status  HTTP status code
+     * @return Response
+     */
     protected function createJSONResponse($content = '', $status = 200)
     {
         $response = new Response($content, $status);
