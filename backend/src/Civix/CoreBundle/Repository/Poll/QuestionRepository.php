@@ -121,6 +121,27 @@ class QuestionRepository extends EntityRepository
         ;
     }
 
+    /**
+     * Returns all news of given $user
+     *
+     * @param  UserInterface $user
+     * @return Poll/Question/*[]
+     */
+    public function getAllLeaderNewsQuery(UserInterface $user)
+    {
+        $className = ucfirst($user->getType()) . 'News';
+
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('ln')
+            ->from("CivixCoreBundle:Poll\\Question\\{$className}", 'ln')
+            ->andWhere('ln.user = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('ln.createdAt', 'DESC')
+            ->getQuery()
+        ;
+    }
+
     public function getPublishedPetitionsQuery(UserInterface $user)
     {
         return $this->getEntityManager()
@@ -146,6 +167,19 @@ class QuestionRepository extends EntityRepository
             ->select('p')
             ->from($this->getPetitionRepositoryName($user), 'p')
             ->where('p.publishedAt IS NULL')
+            ->andWhere('p.user = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('p.createdAt', 'DESC')
+            ->getQuery()
+        ;
+    }
+
+    public function getAllPetitionsQuery(UserInterface $user)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('p')
+            ->from($this->getPetitionRepositoryName($user), 'p')
             ->andWhere('p.user = :userId')
             ->setParameter('userId', $user->getId())
             ->orderBy('p.createdAt', 'DESC')

@@ -16,11 +16,27 @@ civix_api_leader:
     prefix:   /api-leader
     defaults: { _format: 'json' }
 
+civix_api_group:
+    resource: "@CivixApiBundle/Controller/Group/"
+    type:     annotation
+    prefix:   /api/group
+    defaults: { _format: 'json' }
+
+# @todo Think how to keep Group\*Controller routing
+# names that declared on abstract class
+# and so it was overrided by Representative\*Controller
+civix_api_representative:
+    resource: "@CivixApiBundle/Controller/Representative/"
+    type:     annotation
+    prefix:   /api/representative
+    defaults: { _format: 'json' }
+
 civix_front_default:
     resource: "@CivixFrontBundle/Controller/DefaultController.php"
     type: annotation
     prefix:   /
 
+# >>> Remove once API will done
 civix_front_representative_login_check:
     pattern:  /representative/login_check
 
@@ -54,6 +70,8 @@ civix_front_group_area:
     prefix:   /group
     type: annotation
     schemes: [ "https" ]
+
+# <<< Remove once API will done
 
 civix_front_superuser_login_check:
     pattern:  /superuser/login_check

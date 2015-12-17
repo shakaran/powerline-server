@@ -7,6 +7,9 @@ use Civix\CoreBundle\Entity\Poll\Question\Petition;
 use Civix\CoreBundle\Entity\Poll\Answer;
 use Civix\CoreBundle\Entity\Group;
 
+/**
+ * @todo extends QuestionRepository
+ */
 class PetitionRepository extends EntityRepository
 {
     public function getPublishPetitonById($id)
