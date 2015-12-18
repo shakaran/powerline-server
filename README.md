@@ -12,6 +12,26 @@ By contributing to Powerline, you’re making a difference for a fun open source
 
 ## Server DEV Setup 
 
+- Get your encrypted `dev.tar.gpg` from team leader and put it to directory 1 level upper than directory where this project placed (`../hosts/dev.tar.gpg`)
+
+- Copy `build.xml.dist` there too:
+
+```
+cp build.xml.dist ../build.xml
+```
+
+- And decrypt dev credentials:
+
+```
+phing unpack-deployment-target -Dtagret.hosts=dev -Dpassphrase=PASSPHRASE
+```
+
+- Copy files to proper location:
+
+```
+cp ../hosts/dev/config/parameters.yml ./backend/app/config/parameters.yml
+```
+
 ### Bootstrap
 #### Build the image
 ` vagrant up `
@@ -20,9 +40,13 @@ By contributing to Powerline, you’re making a difference for a fun open source
 ` vagrant ssh`
 
 ### Build Database
+
+Run next commands to setup dev environment fixtures: 
+
 ```
 php app/console doctrine:database:create
-php app/console doctrine:migration:migrate -n
+php app/console doctrine:schema:create
+php app/console doctrine:fixtures:load
 ```
 
 ### Cache / Asset
@@ -44,9 +68,12 @@ Although we are hard at work building our new Leader experience, admin.powerli.n
 ### Tests
 
 #### Behat
+
 ```
-/vagrant/backend/bin/behat -p admin
-/vagrant/backend/bin/behat -p api
+vagrant ssh
+cd /vagrant/backend/
+bin/behat -p admin
+bin/behat -p api
 ```
 
 #### Load testing

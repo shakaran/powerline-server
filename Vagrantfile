@@ -20,6 +20,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.inventory_path = "backend/deployment/ansible/inventory/all"
     ansible.playbook = "backend/deployment/ansible/vagrant.yml"
     ansible.sudo = true
+    ansible.limit = "vagrant"
   end
 
 end
