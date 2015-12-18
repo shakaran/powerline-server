@@ -9,6 +9,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Civix\CoreBundle\Entity\Representative;
 use Civix\CoreBundle\Entity\District;
 
+use Civix\CoreBundle\Entity\User;
+
 class CiceroUserUpdateCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -24,7 +26,7 @@ class CiceroUserUpdateCommand extends ContainerAwareCommand
         $userManager = $this->getContainer()->get('civix_core.user_manager');
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $user = $entityManager->getRepository('CivixCoreBundle:User')
+        $user = $entityManager->getRepository(User::class)
             ->find($input->getArgument('user'));
 
         $userManager->updateDistrictsIds($user);
