@@ -8,6 +8,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Civix\CoreBundle\Entity\Representative;
 use Civix\CoreBundle\Entity\District;
+use Civix\CoreBundle\Entity\RepresentativeStorage;
+use Civix\CoreBundle\Entity\Group;
+use Civix\CoreBundle\Entity\User;
 
 class RepresentativeUpdateCommand extends ContainerAwareCommand
 {
@@ -41,14 +44,14 @@ class RepresentativeUpdateCommand extends ContainerAwareCommand
         // delete all representative storage
         if ($input->getOption('purge')) {
             $output->writeln('Purge all storage representative');
-            $entityManager->getRepository('CivixCoreBundle:Representative')
+            $entityManager->getRepository(Representative::class)
                      ->cleanStorageIds();
-            $entityManager->getRepository('CivixCoreBundle:RepresentativeStorage')
+            $entityManager->getRepository(RepresentativeStorage::class)
                     ->purgeRepresentativeStorage();
 
             //clean incorrect local group
             $output->writeln('Purge all incorrect local groups');
-            $entityManager->getRepository('CivixCoreBundle:Group')
+            $entityManager->getRepository(Group::class)
                     ->cleanIncorrectLocalGroup();
 
             //clean old photos
@@ -63,7 +66,7 @@ class RepresentativeUpdateCommand extends ContainerAwareCommand
             $output->writeln('Start update by user\'s profiles');
 
             $output->writeln(' Get users with address');
-            $users = $entityManager->getRepository('CivixCoreBundle:User')
+            $users = $entityManager->getRepository(User::class)
                     ->getAllUsersWithAddressProfile();
 
             foreach ($users as $user) {
@@ -79,7 +82,7 @@ class RepresentativeUpdateCommand extends ContainerAwareCommand
 
         $output->writeln('Update link between active representative and storage');
         //update link between active representative and storage
-        $representatives = $entityManager->getRepository('CivixCoreBundle:Representative')
+        $representatives = $entityManager->getRepository(Representative::class)
                 ->getQueryRepresentativeByStatus(Representative::STATUS_ACTIVE)->getResult();
 
         foreach ($representatives as $representative) {

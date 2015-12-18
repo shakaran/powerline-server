@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Civix\CoreBundle\Entity\RepresentativeStorage;
+
 class OpenstatesUpdateCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -21,7 +23,7 @@ class OpenstatesUpdateCommand extends ContainerAwareCommand
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         
         $output->writeln('Get all storage representative without link openstates api');
-        $representatives = $entityManager->getRepository('CivixCoreBundle:RepresentativeStorage')
+        $representatives = $entityManager->getRepository(RepresentativeStorage::class)
             ->getSTRepresenativeWithoutLink();
         
         foreach ($representatives as $representative) {
