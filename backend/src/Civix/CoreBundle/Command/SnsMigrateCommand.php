@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Civix\CoreBundle\Entity\Notification;
 
+use Civix\CoreBundle\Entity\User;
+
 class SnsMigrateCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -23,7 +25,7 @@ class SnsMigrateCommand extends ContainerAwareCommand
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $users = $em->getRepository('CivixCoreBundle:User')->findAll();
+        $users = $em->getRepository(User::class)->findAll();
         /* @var $user \Civix\CoreBundle\Entity\User */
         foreach ($users as $user) {
             if ($user->getAndroidDevice()) {
