@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Civix\CoreBundle\Entity\Superuser;
+
 class SuperuserPasswordCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -25,7 +27,7 @@ class SuperuserPasswordCommand extends ContainerAwareCommand
     {
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         
-        $superuser = $entityManager->getRepository('CivixCoreBundle:Superuser')
+        $superuser = $entityManager->getRepository(Superuser::class)
                 ->findOneByUsername($input->getArgument('username'));
         if ($superuser) {
             $dialog = $this->getHelperSet()->get('dialog');

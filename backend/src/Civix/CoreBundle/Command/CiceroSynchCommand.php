@@ -9,6 +9,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Civix\CoreBundle\Entity\Representative;
 use Doctrine\ORM\EntityManager;
 
+use Civix\CoreBundle\Entity\RepresentativeStorage;
+
 class CiceroSynchCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -37,10 +39,10 @@ class CiceroSynchCommand extends ContainerAwareCommand
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         if ($input->getOption('state')) {
-            $representatives = $entityManager->getRepository('CivixCoreBundle:RepresentativeStorage')
+            $representatives = $entityManager->getRepository(RepresentativeStorage::class)
                 ->findSTRepresentativeByState($input->getOption('state'));
         } else {
-            $representatives = $entityManager->getRepository('CivixCoreBundle:RepresentativeStorage')
+            $representatives = $entityManager->getRepository(RepresentativeStorage::class)
                 ->findSTRepresentativeByUpdatedAt(new \DateTime(), $input->getOption('records'));
         }
 

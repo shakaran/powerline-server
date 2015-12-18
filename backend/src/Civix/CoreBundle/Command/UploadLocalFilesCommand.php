@@ -14,6 +14,12 @@ use Gaufrette\Stream\Local as LocalStream;
 use Gaufrette\StreamMode;
 use Gaufrette\Adapter\MetadataSupporter;
 
+use Civix\CoreBundle\Entity\RepresentativeStorage;
+use Civix\CoreBundle\Entity\Representative;
+use Civix\CoreBundle\Entity\Group;
+use Civix\CoreBundle\Entity\User;
+use Civix\CoreBundle\Entity\Poll\EducationalContext;
+
 class UploadLocalFilesCommand extends ContainerAwareCommand
 {
     /**
@@ -59,11 +65,11 @@ class UploadLocalFilesCommand extends ContainerAwareCommand
         $this->vichLocalStorage = $this->getContainer()->get('vich_uploader.storage.file_system');
         $this->vichGaufretteStorage = $this->getContainer()->get('vich_uploader.storage.gaufrette');
 
-        $representativeStorage = $em->getRepository('CivixCoreBundle:RepresentativeStorage')->findAll();
-        $representatives = $em->getRepository('CivixCoreBundle:Representative')->findAll();
-        $groups = $em->getRepository('CivixCoreBundle:Group')->findAll();
-        $users = $em->getRepository('CivixCoreBundle:User')->findAll();
-        $educational = $em->getRepository('CivixCoreBundle:Poll\EducationalContext')->findAll();
+        $representativeStorage = $em->getRepository(RepresentativeStorage::class)->findAll();
+        $representatives = $em->getRepository(Representative::class)->findAll();
+        $groups = $em->getRepository(Group::class)->findAll();
+        $users = $em->getRepository(User::class)->findAll();
+        $educational = $em->getRepository(EducationalContext::class)->findAll();
 
         $representativeStorage = $this->checkAvatars($representativeStorage,
             $this->getContainer()->get('gaufrette.avatar_representative_fs_filesystem'), '/avatars/representatives/');
