@@ -21,6 +21,11 @@ security:
             encode-as-base64: false
             iterations: 473
 
+    # There are 4 kind of users: Representative, Group, Superuser, User
+    #
+    # The User is splitted in two subtypes:
+    # - mobileuser: access to all methods from API
+    # - webuser: access to all regular methods from website
     providers:
         representative:
             entity: { class: CivixCoreBundle:Representative, property: username }
@@ -30,8 +35,11 @@ security:
             entity: { class: CivixCoreBundle:Superuser, property: username }
         mobileuser:
             entity: { class: CivixCoreBundle:User, property: username }
+        webuser:
+            entity: { class: CivixCoreBundle:User, property: username }
 
     firewalls:
+        # Representative
         representative_login:
             pattern: ^/representative/login$
             anonymous: ~
@@ -51,6 +59,7 @@ security:
                 path: /representative/logout
                 target: /representative
 
+        # Group
         group_login:
             pattern: ^/group/login$
             anonymous: ~
@@ -70,6 +79,7 @@ security:
                 path: /group/logout
                 target: /group
 
+        # Superuser
         superuser_login:
             pattern: ^/superuser/login$
             anonymous: ~
@@ -90,6 +100,7 @@ security:
             pattern: ^/api-public/
             anonymous: ~
 
+        # Mobileuser (User subtype)
         mobileuser_login:
             pattern: ^/api/secure/login$
             anonymous: ~
@@ -124,6 +135,44 @@ security:
             header: true
             provider: mobileuser
 
+
+        # Webuser (User subtype)
+        webuser_login:
+            pattern: ^/user/login$
+            anonymous: ~
+
+        webuser_registration:
+            pattern: ^/user/registration$
+            anonymous: ~
+
+        webuser_facebook_login:
+            pattern: ^/user/facebook/login$
+            anonymous: ~
+
+        webuser_facebook_registration:
+            pattern: ^/user/registration-facebook$
+            anonymous: ~
+
+        webuser_forgot_password:
+            pattern: ^/user/forgot-password$
+            anonymous: ~
+
+        webuser_reset_token:
+            pattern: ^/user/resettoken/
+            anonymous: ~
+
+        webuser_request_beta:
+            pattern: ^/user/beta$
+            anonymous: ~
+
+        webuser_security_area:
+            pattern: ^/user/
+            security: true
+            header: true
+            provider: webuser
+
+
+        # Leader
         leader_api_login:
             pattern: ^/api-leader/sessions/$
             anonymous: ~
