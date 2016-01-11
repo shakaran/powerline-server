@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Civix\CoreBundle\Entity\Group;
+use Civix\CoreBundle\Entity\User;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 
 class LoadGroupStateData implements FixtureInterface, OrderedFixtureInterface, ContainerAwareInterface
@@ -59,7 +60,7 @@ class LoadGroupStateData implements FixtureInterface, OrderedFixtureInterface, C
         $manager->flush();
 
         //update current users
-        $allUsers = $manager->getRepository('CivixCoreBundle:User')
+        $allUsers = $manager->getRepository(User::class)
             ->findAll();
         foreach ($allUsers as $currentUser) {
              $this->container->get('civix_core.group_manager')
