@@ -34,4 +34,25 @@ class UserController extends Controller
         return array();
     }
 
+    /**
+     * @Route("/login", name="civix_front_user_login")
+     * @Method({"GET"})
+     */
+    public function loginAction()
+    {
+        $csrfToken = $this->container->get('form.csrf_provider')->generateCsrfToken('user_authentication');
+
+        if ($this->get('request')->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
+            $error = $this->get('request')->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+        } else {
+            $error = $this->get('request')->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
+            $this->get('request')->getSession()->remove(SecurityContext::AUTHENTICATION_ERROR);
+        }
+
+        return $this->render('CivixFrontBundle:User:login.html.twig', array(
+                'last_username' => $this->get('request')->getSession()->get(SecurityContext::LAST_USERNAME),
+                'error' => $error,
+                'csrf_token' => $csrfToken
+            ));
+    }
 }
