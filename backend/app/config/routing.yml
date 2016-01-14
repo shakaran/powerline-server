@@ -94,3 +94,21 @@ civix_account:
     resource: "@CivixFrontBundle/Controller/AccountController.php"
     prefix:   /account
     type: annotation 
+    
+# User (webuser) in frontend
+civix_front_user_login_check:
+    pattern:  /user/login_check
+
+civix_user_logout:
+    pattern:  /user/logout
+
+civix_front_user_area:
+    resource: "@CivixFrontBundle/Controller/User/"
+    prefix:   /user
+    type: annotation
+    schemes: [ "https" ]
+
+civix_user:
+    resource: "@CivixFrontBundle/Controller/UserController.php"
+    prefix:   /user
+    type: annotation
