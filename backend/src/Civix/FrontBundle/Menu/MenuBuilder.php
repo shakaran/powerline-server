@@ -201,6 +201,9 @@ class MenuBuilder extends AbstractNavbarMenuBuilder
             $menu->addChild("Superuser", array('route' => 'civix_front_superuser'))
                 ->setExtras(array('routes' =>
                     array('civix_front_superuser', 'civix_front_superuser_login')));
+			$menu->addChild("User", array('route' => 'civix_front_user'))
+                ->setExtras(array('routes' =>
+                    array('civix_front_user', 'civix_front_user_login')));
             $menu->addChild("Representative", array('route' => 'civix_front_representative'))
                 ->setExtras(array('routes' =>
                     array('civix_front_representative',
