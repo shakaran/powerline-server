@@ -28,7 +28,7 @@ class UserController extends Controller
     public function indexAction()
     {
         if (true === $this->get('security.context')->isGranted('ROLE_USER')) {
-            return $this->redirect($this->generateUrl('civix_front_user'));
+            return $this->redirect($this->generateUrl('webuser_login'));
         }
 
         return array();
